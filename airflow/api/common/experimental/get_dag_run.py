@@ -37,7 +37,6 @@ def get_dag_run(dag_id, run_id, run_url_route='Airflow.graph'):
         raise AirflowException(error_message)
 
     dag_runs = list()
-    state = state.lower() if state else None
     for run in DagRun.find(dag_id=dag_id, run_id=run_id):
         dag_runs.append({
             'id': run.id,
