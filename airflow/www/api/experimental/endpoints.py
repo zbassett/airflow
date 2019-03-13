@@ -25,6 +25,7 @@ from airflow.api.common.experimental import delete_dag as delete
 from airflow.api.common.experimental import pool as pool_api
 from airflow.api.common.experimental import trigger_dag as trigger
 from airflow.api.common.experimental.get_dag_runs import get_dag_runs
+from airflow.api.common.experimental.get_dag_run import get_dag_run
 from airflow.api.common.experimental.get_task import get_task
 from airflow.api.common.experimental.get_task_instance import get_task_instance
 from airflow.exceptions import AirflowException
@@ -127,6 +128,26 @@ def dag_runs(dag_id):
         return response
 
     return jsonify(dagruns)
+
+
+@api_experimental.route('/dags/<string:dag_id>/dag_run/<string:run_id>', methods=['GET'])
+@requires_authentication
+def dag_run(dag_id, run_id):
+    """
+    Returns a single Dag Run for a specific DAG ID and RUN ID.
+    :param dag_id: String identifier of a DAG
+    :param run_id: String identifier of a DAG RUN
+    :return: Info for single DAG run
+    """
+    try:
+        dagrun = get_dag_run(dag_id, run_id, run_url_route='airflow.graph')
+    except AirflowException as err:
+        _log.info(err)
+        response = jsonify(error="{}".format(err))
+        response.status_code = 400
+        return response
+
+    return jsonify(dagrun)
 
 
 @api_experimental.route('/test', methods=['GET'])
