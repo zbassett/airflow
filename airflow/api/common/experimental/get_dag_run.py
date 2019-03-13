@@ -46,8 +46,8 @@ def get_dag_run(dag_id, run_id, run_url_route='Airflow.graph'):
             'execution_date': run.execution_date.isoformat(),
             'start_date': ((run.start_date or '') and
                            run.start_date.isoformat()),
-            'dag_run_url': url_for('Airflow.graph', dag_id=run.dag_id,
-                                   execution_date=run.execution_date)
+            'dag_run_url': url_for('airflow.graph', dag_id=run.dag_id,
+                                   run_id=run.run_id)
         })
 
     if len(dag_runs) < 1:
